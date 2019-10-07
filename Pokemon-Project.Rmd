@@ -1,19 +1,19 @@
 ---
-title: "Pokemon Breeding Analysis"
+title: "Pokémon Breeding Analysis"
 author: "Roland Hentz"
 output: pdf_document
 ---
 
 # Abstract  
 
-  Using a simulation method that depended upon open knowledge of a few of the mechanics of the video game Pokemon Sun, different methods of acquiring highly powerful Pokemon were compared. Graphical analysis gave insight into the benefit and cost of different acquisition methods. Final analysis allowed for the recommendation of the most efficient method of obtaining the most powerful Pokemon of a given species. The most efficient method to acquire Pokemon high individual values is to breed Pokemon starting with a Destiny Knot and with an initial parent chained to have five perfect IVs. If the player has selected a Pokemon whose attack style matters, then some time may be saved by ignoring the unused attack style.
+Using a simulation method that depended upon publicly available knowledge of a few of the mechanics of the video game Pokémon Sun, different methods of acquiring highly powerful Pokémon were compared. Graphical analysis gave insight into the benefit and cost of different acquisition methods. Final analysis allowed for the recommendation of the most efficient method of obtaining the most powerful Pokémon of a given species. The most efficient method to acquire Pokémon high individual values is to breed Pokémon starting with a Destiny Knot and with an initial parent chained to have five perfect IVs. If the player has selected a Pokémon whose attack style matters, then some time may be saved by ignoring the unused attack style.
 
 ```{r function.setup, echo = FALSE, message = FALSE}
 if(!require(ggplot2)) install.packages("ggplot2")
 library(ggplot2)
 
 wild_sim <- function(iter) {
-  # Simulates distribution of wild-caught Pokemon.
+  # Simulates distribution of wild-caught Pokémon.
   # Args:
   #   iter: The size of the distribution.
   # Returns:
@@ -40,13 +40,13 @@ wild_sim <- function(iter) {
 # }
 
 chained_sim <- function(iv_slots) {
-  # Simulates a single Pokemon, expected to be caught by ally-chaining.
+  # Simulates a single Pokémon, expected to be caught by ally-chaining.
   # Args:
-  #   iv_slots: The number of perfect IVs possessed by the Pokemon. 
+  #   iv_slots: The number of perfect IVs possessed by the Pokémon. 
   #     Normal chaining means that this value will be 4. Values of 0, 5, and 
   #     6 are useful to simulate unique circumstances for the breeding function.
   # Returns:
-  #   A vector of length 6 containing the IVs of the Pokemon simulated.
+  #   A vector of length 6 containing the IVs of the Pokémon simulated.
   
   # selects which IVs will be perfect
   log_v <- c(1,2,3,4,5,6)
@@ -65,7 +65,7 @@ chained_sim <- function(iv_slots) {
 }
 
 chained_sim_mult <- function(iters) {
-  # Simulates a distribution of Pokemon caught using chaining
+  # Simulates a distribution of Pokémon caught using chaining
   # Args:
   #   iters: The size of the distribution.
   # Returns:
@@ -79,12 +79,12 @@ chained_sim_mult <- function(iters) {
 }
 
 breed_sim <- function(wknot,ch_ivs,atk_style,goal_iv,num_iter) {
-  # Simulates Pokemon breeding.
+  # Simulates Pokémon breeding.
   # Args:
   #   wknot: Boolean true if destiny knot in use, false if not.
   #   ch_ivs: The number of perfect IVs of one of the starting parents. 0 if 
-  #     starting from a wild Pokemon. 4, 5, and 6 refer to chain-caught Pokemon.
-  #   atk_style: Boolean true if one of Atk of SpA does not matter in Pokemon 
+  #     starting from a wild Pokémon. 4, 5, and 6 refer to chain-caught Pokémon.
+  #   atk_style: Boolean true if one of Atk of SpA does not matter in Pokémon 
   #     being bred.
   #   goal_iv: The IV sum total that is considered the threshold for accepting 
   #     an egg as perfect.
@@ -303,26 +303,26 @@ reparam <- function(poke.frame,post) {
 
 # Introduction  
 
-  In the popular video game series Pokemon, players capture, train, and battle with digital monsters called Pokemon. Each of these monsters has six statistics, which the player can view, that communicate the effectiveness of that Pokemon in a battle. Those statistics are calculated using values innate to a species of that Pokemon (base statistics), values accumulated through training (effort values), and values assigned to a Pokemon at birth or capture (individual values). Base statistics are immutable, and effort values are easily assigned by a motivated player. The focus of this project is on a Pokemon's individual values. In this paper, individual values will be referred to as IVs.  
+In the popular video game series Pokémon, players capture, train, and battle with digital monsters called Pokémon. Each of these monsters has six statistics, which the player can view, that communicate the effectiveness of that Pokémon in a battle. Those statistics are calculated using values innate to a species of that Pokémon (base statistics), values accumulated through training (effort values), and values assigned to a Pokémon at birth or capture (individual values). Base statistics are immutable, and effort values are easily assigned by a motivated player. The focus of this project is on a Pokémon's individual values. In this paper, individual values will be referred to as IVs.  
   
-  Each of the Pokemon's six statistics has an IV between zero and thirty-one that is randomly assigned upon capture or birth. These cannot be changed at any time or in any way during the lifetime of the Pokemon. IVs have a rather high weight when used in calculating a Pokemon's visible statistics. In other words, IVs matter tremendously when a Pokemon makes it into a battle. While the mechanics are very similar across multiple generations of the game series, this paper has been written to match the mechanics of Pokemon Sun and Moon.  
+Each of the Pokémon's six statistics has an IV between zero and thirty-one that is randomly assigned upon capture or birth. These cannot be changed at any time or in any way during the lifetime of the Pokémon. IVs have a rather high weight when used in calculating a Pokémon's visible statistics. In other words, IVs matter tremendously when a Pokémon makes it into a battle. While the mechanics are very similar across multiple generations of the game series, this paper has been written to match the mechanics of Pokémon Sun and Moon.  
   
-  There are two main methods for acquiring Pokemon with high IVs. The first is breeding. By taking two Pokemon of breedable species to a Pokemon day-care center within the video game, the player will be given an egg of the female Pokemon's species. This new Pokemon will inherit three out of its six IVs from its parents. Using an item called the Destiny Knot, a bred Pokemon inherits five out of its six IVs from its parents. The parent each inherited IV comes from is random. When an egg Pokemon is born that has better IVs than its parent of that gender, the parent is replaced with the child to progressively increase the IVs of the parents.  
+There are two main methods for acquiring Pokémon with high IVs. The first is breeding. By taking two Pokémon of breedable species to a Pokémon day-care center within the video game, the player will be given an egg of the female Pokémon's species. This new Pokémon will inherit three out of its six IVs from its parents. Using an item called the Destiny Knot, a bred Pokémon inherits five out of its six IVs from its parents. The parent each inherited IV comes from is random. When an egg Pokémon is born that has better IVs than its parent of that gender, the parent is replaced with the child to progressively increase the IVs of the parents.  
   
-  The other method of acquiring high IV Pokemon is called ally-chaining. In this method, a player first engages a Pokemon of the desired species in combat. Next, the player weakens that Pokemon's health, causing it to summon another Pokemon as an "ally" to assist it in battle. After repeating this second step thirty times, the Pokemon summoned will have four perfect IVs. Only one Pokemon may be caught in each ally-chaining episode.  
+The other method of acquiring high IV Pokémon is called ally-chaining. In this method, a player first engages a Pokémon of the desired species in combat. Next, the player weakens that Pokémon's health, causing it to summon another Pokémon as an "ally" to assist it in battle. After repeating this second step thirty times, the Pokémon summoned will have four perfect IVs. Only one Pokémon may be caught in each ally-chaining episode.  
   
-  Each of these methods can be relatively time-consuming, and there are a handful of ways to modify each, such as using the Destiny Knot. Therefore, this paper will answer the question of which method of obtaining Pokemon with high IVs is the most efficient.  
+Each of these methods can be relatively time-consuming, and there are a handful of ways to modify each, such as using the Destiny Knot. Therefore, this paper will answer the question of which method of obtaining Pokémon with high IVs is the most efficient.  
 
 # Materials and Methods  
 
-  To solve this problem, a series of distributions were generated using random sampling and Pokemon game mechanics. Since most of the Pokemon game mechanics are quite-well known to enthusiasts and any internet-user with the time and interest, the distributions were generated using exactly the same rules as the video game series. As such, the R simulation perfectly emulates a player performing each of the methods analyzed.  
+To solve this problem, a series of distributions were generated using random sampling and Pokémon game mechanics. Since most of the Pokémon game mechanics are quite well-known to enthusiasts and any internet user with the time and interest, the distributions were generated using exactly the same rules as the video game series. As such, the R simulation perfectly emulates a player performing each of the methods analyzed.  
   
-  Two variables that require explanation right away are threshold and time. The threshold variable is an integer that represents the value that a Pokemon's sum of IVs must surpass in order to be considered a success. In breeding, that is the point at which breeding is started over from scratch again. In ally-chaining, the threshold simply measure which Pokemon are acceptable products of the method. The other variable to explain now is time. This variable measures time in minutes to acquire a Pokemon that meets the given threshold requirement.  
+Two variables that require explanation right away are threshold and time. The threshold variable is an integer that represents the value that a Pokémon's sum of IVs must surpass in order to be considered a success. In breeding, that is the point at which breeding is started over from scratch again. In ally-chaining, the threshold simply measure which Pokémon are acceptable products of the method. The other variable to explain now is time. This variable measures time in minutes to acquire a Pokémon that meets the given threshold requirement. Time conversion factors used are averages of empirical time rates for each process.   
   
   *Threshold values are 186 (all six IVs are perfect), 180, 174, 168, 162, and 156*  
 
 ```{r dist.gen, echo = FALSE, include = FALSE}
-# use the year Pokemon Ruby was released as the seed
+# use the year Pokémon Ruby was released as the seed
 set.seed(2003)
 iter <- 10 ^ 4
 alpha <- frame_gen(iter)
@@ -331,7 +331,7 @@ alpha <- frame_gen(iter)
 
 # Results  
 
-  Each of the two previously mentioned methods of obtaining high-IV Pokemon have a few different cases to consider. We begin with considering breeding. The first variable to look at is the Destiny Knot. This item increases the number of IVs inherited from a bred Pokemon's parents from three to five. In the scatter plot and box plot, higher values of time, along the y-axis, are worse because they correspond to a greater amount of time needed to acquire an acceptable Pokemon using the given method and conditions. In the scatter plot, the blue points (cases not using the knot) appear to be clustered above the red points (cases using the knot). Overlaying a linear regression makes this observation more clear. At no point do either regression line fall inside the other line's confidence interval. This indicates that the use of a knot reduces the time spent breeding. In the box plot, the median of the knot usage group lies above the 3rd quartile for the group not using the knot. This further shows that, at each of the points of measurement used to generate the plot, not using a knot takes quite a bit longer than using one.  
+Each of the two previously mentioned methods of obtaining high-IV Pokémon have a few different cases to consider. We begin with considering breeding. The first variable to look at is the Destiny Knot. This item increases the number of IVs inherited from a bred Pokémon's parents from three to five. In the scatter plot and box plot, higher values of time, along the y-axis, are worse because they correspond to a greater amount of time needed to acquire an acceptable Pokémon using the given method and conditions. In the scatter plot, the blue points (cases not using the knot) appear to be clustered above the red points (cases using the knot). Overlaying a linear regression makes this observation more clear. At no point do either regression line fall inside the other line's confidence interval. This indicates that the use of a knot reduces the time spent breeding. In the box plot, the median of the knot usage group lies above the 3rd quartile for the group not using the knot. This further shows that, at each of the points of measurement used to generate the plot, not using a knot takes quite a bit longer than using one.  
 
 ```{r breeding.condition1, echo = FALSE, warning = FALSE}
 beta <- reparam(alpha, FALSE)
@@ -353,13 +353,13 @@ ggplot(gamma, aes(knot, time)) +
 
 ```
 
-  The next condition to consider is what we will refer to as attack style. For most Pokemon, only five out of its six IVs are truly important. This is because two of the IVs are used exclusively to one another to calculate attack damage, based on the style of attack used. Almost all Pokemon have a preferred attack style that depends on the Pokemon's base stats and available attacks. Whether or not attack style matters is generally inherent to the Pokemon the player wishes to use, meaning that it is not necessarily a variable the player chooses to manipulate. However, we will look at whether or not time is saved by ignoring the unused attack IV when breeding.  
+The next condition to consider is what we will refer to as attack style. For most Pokémon, only five out of its six IVs are truly important. This is because two of the IVs are used exclusively to one another to calculate attack damage, based on the style of attack used. Almost all Pokémon have a preferred attack style that depends on the Pokémon's base stats and available attacks. Whether or not attack style matters is generally inherent to the Pokémon the player wishes to use, meaning that it is not necessarily a variable the player chooses to manipulate. However, we will look at whether or not time is saved by ignoring the unused attack IV when breeding.  
   
-  The scatter plot colored by whether attack style is considered does not suggest that attack style saves time. The linear regression lines overlap each other's confidence interval. The points appear to be distributed quite evenly. The box plot suggests a very modest amount of time saved by considering attack style. The quantiles appear similarly situated, suggesting that there is not much of a difference between the two cases.  
+The scatter plot, colored by whether attack style is considered, suggests that ignoring one attack style does not save time. The linear regression lines overlap each other's confidence interval. The points appear to be distributed quite evenly. The box plot suggests a very modest amount of time saved by considering attack style. The quantiles appear similarly situated, suggesting that there is not much of a difference between the two cases.  
 
 ```{r breeding.condition2, echo = FALSE, warning = FALSE}
 # atk style matters, just not as much as the knot
-# atk style also is generally chosen by the pokemon rather than the player
+# atk style also is generally chosen by the Pokémon rather than the player
 ggplot(gamma, aes(thold, time, color=atkst)) +
   geom_jitter() +
   scale_y_log10() +
@@ -375,9 +375,9 @@ ggplot(gamma, aes(atkst, time)) +
 
 ```
 
-  The next breeding condition to analyze is the IV sum of the initial parents in a breeding session. The player may re-use a Pokemon that has been chained to guarantee at least four perfect IVs across breeding sessions. While it only takes a single chaining session to acquire a Pokemon with four perfect IVs, a player may continue to chain Pokemon in order to catch one with five or even all six perfect IVs with better odds than without chaining. Now we will examine the cases of using a totally random wild Pokemon as the initial parent and parents chained to four, five, and six perfect IVs.  
+The next breeding condition to analyze is the IV sum of the initial parents in a breeding session. The player may re-use a Pokémon that has been chained to guarantee at least four perfect IVs across breeding sessions. While it only takes a single chaining session to acquire a Pokémon with four perfect IVs, a player may continue to chain Pokémon in order to catch one with five or even all six perfect IVs with better odds than without chaining. Now we will examine the cases of using a totally random wild Pokémon as the initial parent and parents chained to four, five, and six perfect IVs.  
   
-  In the scatter plot, large circles show Pokemon that were bred with a Destiny Knot, small circles without. It appears quite clearly that across the cases of Destiny Knot usage, the more an initial parent is chained to perfect IVs, the faster breeding is. The box plot demonstrates this phenomenon quite well. What must also be taken into consideration beyond just time saved by chaining is how much time it would take to acquire a Pokemon with a given number of perfect IVs. Because the values for time are positively-skewed, and because some values for time are infinity (meaning a Pokemon meeting the threshold requirement was never acquired with that method), we will look at the median of time across cases of chaining the initial parent in breeding. Additionally, the median offers some interpretive benefit by allowing a player to see below or above which point they have a one in two chance of falling. The median for not chaining, case reported below.  
+In the scatter plot, large circles show Pokémon that were bred with a Destiny Knot, small circles without. It appears quite clearly that across the cases of Destiny Knot usage, the more an initial parent is chained to perfect IVs, the faster breeding is. The box plot demonstrates this phenomenon quite well. What must also be taken into consideration beyond just time saved by chaining is how much time it would take to acquire a Pokémon with a given number of perfect IVs. Because the values for time are positively-skewed, and because some values for time are infinity (meaning a Pokémon meeting the threshold requirement was never acquired with that method), we will look at the median of time across cases of chaining the initial parent in breeding. Additionally, the median offers some interpretive benefit by allowing a player to see below or above which point they have a one in two chance of falling.  
 
 ```{r breeding.condition3, echo = FALSE, warning = FALSE, message = FALSE}
 # does chaining matter
@@ -407,37 +407,36 @@ for (t in c("0", "4", "5", "6")) {
 
 ```
 
-  Next we must ask how much time it takes to acquire a five IV initial parent or a six IV initial parent. Remember that we need only capture one since we can re-use the initial parent for each breeding. The median time to capture a five IV parent is and the median time for a six IV parent are each reported below. Chaining up to a five IV parent will save the player time if the player intends to breed at a minimum five Pokemon. Chaining to a six IV parent would save time only if the player intended to breed around five-hundred Pokemon.  
+Next we must ask how much time it takes to acquire a five IV initial parent or a six IV initial parent. Remember that we need only capture one since we can re-use the initial parent for each breeding. The median time to capture a five IV parent is and the median time for a six IV parent are each reported below. Chaining up to a five IV parent will save the player time if the player intends to breed at a minimum five Pokémon. Chaining to a six IV parent would save time only if the player intended to breed around five-hundred Pokémon.  
 
 ```{r breeding.condition4, echo = FALSE}
 # odds of 6iv ditto is on gamefaqs (out of the question)
 # odds of 5 iv ditto P(A)=2/31
 delta <- data.frame(val <- rgeom(10 ^ 5, 2 / 31))
-cat("Median time to capture a five IV Pokemon by chaining: ",
+cat("Median time to capture a five IV Pokémon by chaining: ",
     median(delta$val) * 15, " minutes.\n")
 
 # test of the 6 iv ditto for fun
 delta2 <- data.frame(val <- rgeom(10 ^ 5, 1 / (31 * 31)))
-cat("Median time to capture a six IV Pokemon by chaining: ",
+cat("Median time to capture a six IV Pokémon by chaining: ",
     median(delta2$val) * 15, " minutes.")
 # chaining to 5 ditto worth it, but not for 6 ditto
 
 ```
 
-  Now that we have seen all cases for breeding, we will look at capturing Pokemon. The three cases to consider are catching completely wild Pokemon with no other strategies implemented, ally-chaining, and ally-chaining considering attack style. These cases are coded by color and shape in the scatter plot below. Catching Pokemon completely wild appears to take dramatically longer than chaining. Chaining when considering attack style actually slows down the process of acquiring a high IV Pokemon in this case. This is because a Pokemon that matches the threshold when considering all six IVs may have to be rejected on the basis of much of its IV sum coming from its useless attack style. Chained Pokemon with the correct attack style are slightly less common.  
+Now that we have seen all cases for breeding, we will look at capturing Pokémon. The three cases to consider are catching completely wild Pokémon with no other strategies implemented, ally-chaining, and ally-chaining considering attack style. These cases are coded by color and shape in the scatter plot below. Catching Pokémon completely wild appears to take dramatically longer than chaining. Chaining when considering attack style actually slows down the process of acquiring a high IV Pokémon in this case. This is because a Pokémon that matches the threshold when considering all six IVs may have to be rejected on the basis of much of its IV sum coming from its useless attack style. Chained Pokémon with the correct attack style are slightly less common.  
   
-  *To make the calculation for the attack style chained captures, the threshold value was multiplied by five-sixths.*  
+  *To make the calculation for the attack style chained captures, the threshold value was multiplied by five-sixths. These cases are plotted along the unmodified threshold axis to allow comparison.*  
 
 ```{r capture.conditions, echo = FALSE}
 # chain catching and wild-caught
 epsilon <- subset(beta, beta$bred != "bred")
 
-ggplot(epsilon, aes(thold, time, color = catch.type, shape = atkst)) +
+ggplot(epsilon, aes(thold, time, color = catch.type)) +
   geom_point(size = 3) + 
   scale_y_log10() +
   labs(color = "Capture Method", x = "IV Sum Threshold", y = "Time",
-       title = "IV Sum Threshold vs. Time by Capture Method", 
-       shape = "Attack Style")
+       title = "IV Sum Threshold vs. Time by Capture Method")
 
 ```
 
@@ -445,7 +444,7 @@ ggplot(epsilon, aes(thold, time, color = catch.type, shape = atkst)) +
 
 # Discussion
 
-  Across chaining and breeding, a set of ideal conditions can be selected. These are plotted below by color. Remember that attack style is generally chosen by the Pokemon, not by the player, but does have an impact on time. Ideal breeding conditions are to use the Destiny Knot and to start breeding with a five IV initial parent. Ideal chaining is essentially just regular chaining, as there are not optional techniques that are in question of saving time. Here we can see that the best method is to breed using the aforementioned techniques. If the player is lucky and chooses a Pokemon whose attack style matters, he or she will save just a little bit more time.  
+Across chaining and breeding, a set of ideal conditions can be selected. These are plotted below. Remember that attack style is generally chosen by the Pokémon, not by the player, but does have an impact on time. In the case of chaining, considering attack style increases time. In the case of breeding, considering attack style reduces time. Ideal breeding conditions are to use the Destiny Knot and to start breeding with a five IV initial parent. Ideal chaining is essentially just regular chaining, as there are not optional techniques that may save time. Here we can see that the best method is to breed using the aforementioned techniques. If the player is lucky and chooses a Pokémon whose attack style matters, he or she will save just a little bit more time.  
 
 ```{r final.analysis, echo = FALSE}
 beta <- reparam(alpha, TRUE)
@@ -454,7 +453,7 @@ beta <- reparam(alpha, TRUE)
 zeta <- subset(beta, catch.type == "ideal breeding" | 
                  catch.type == "ideal chaining")
 ggplot(zeta, aes(thold, time, color = catch.type, shape = atkst)) +
-  geom_point() +
+  geom_point(size = 2) +
   scale_y_log10() +
   labs(color = "Acquisition Method", x = "IV Sum Threshold", y = "Time",
        title = "IV Sum Threshold vs. Time by Acquisition and Attack Style",
@@ -486,7 +485,7 @@ if(!require(ggplot2)) install.packages("ggplot2")
 library(ggplot2)
 
 wild_sim <- function(iter) {
-  # Simulates distribution of wild-caught Pokemon.
+  # Simulates distribution of wild-caught Pokémon.
   # Args:
   #   iter: The size of the distribution.
   # Returns:
@@ -513,13 +512,13 @@ wild_sim <- function(iter) {
 # }
 
 chained_sim <- function(iv_slots) {
-  # Simulates a single Pokemon, expected to be caught by ally-chaining.
+  # Simulates a single Pokémon, expected to be caught by ally-chaining.
   # Args:
-  #   iv_slots: The number of perfect IVs possessed by the Pokemon. 
+  #   iv_slots: The number of perfect IVs possessed by the Pokémon. 
   #     Normal chaining means that this value will be 4. Values of 0, 5, and 
   #     6 are useful to simulate unique circumstances for the breeding function.
   # Returns:
-  #   A vector of length 6 containing the IVs of the Pokemon simulated.
+  #   A vector of length 6 containing the IVs of the Pokémon simulated.
   
   # selects which IVs will be perfect
   log_v <- c(1,2,3,4,5,6)
@@ -538,7 +537,7 @@ chained_sim <- function(iv_slots) {
 }
 
 chained_sim_mult <- function(iters) {
-  # Simulates a distribution of Pokemon caught using chaining
+  # Simulates a distribution of Pokémon caught using chaining
   # Args:
   #   iters: The size of the distribution.
   # Returns:
@@ -552,12 +551,12 @@ chained_sim_mult <- function(iters) {
 }
 
 breed_sim <- function(wknot,ch_ivs,atk_style,goal_iv,num_iter) {
-  # Simulates Pokemon breeding.
+  # Simulates Pokémon breeding.
   # Args:
   #   wknot: Boolean true if destiny knot in use, false if not.
   #   ch_ivs: The number of perfect IVs of one of the starting parents. 0 if 
-  #     starting from a wild Pokemon. 4, 5, and 6 refer to chain-caught Pokemon.
-  #   atk_style: Boolean true if one of Atk of SpA does not matter in Pokemon 
+  #     starting from a wild Pokémon. 4, 5, and 6 refer to chain-caught Pokémon.
+  #   atk_style: Boolean true if one of Atk of SpA does not matter in Pokémon 
   #     being bred.
   #   goal_iv: The IV sum total that is considered the threshold for accepting 
   #     an egg as perfect.
@@ -775,7 +774,7 @@ reparam <- function(poke.frame,post) {
 
 # Chunk 2
 
-# use the year Pokemon Ruby was released as the seed
+# use the year Pokémon Ruby was released as the seed
 set.seed(2003)
 iter <- 10 ^ 4
 alpha <- frame_gen(iter)
@@ -804,7 +803,7 @@ ggplot(gamma, aes(knot, time)) +
 # Chunk 4
 
 # atk style matters, just not as much as the knot
-# atk style also is generally chosen by the pokemon rather than the player
+# atk style also is generally chosen by the Pokémon rather than the player
 ggplot(gamma, aes(thold, time, color=atkst)) +
   geom_jitter() +
   scale_y_log10() +
@@ -852,12 +851,12 @@ for (t in c("0", "4", "5", "6")) {
 # odds of 6iv ditto is on gamefaqs (out of the question)
 # odds of 5 iv ditto P(A)=2/31
 delta <- data.frame(val <- rgeom(10 ^ 5, 2 / 31))
-cat("Median time to capture a five IV Pokemon by chaining: ",
+cat("Median time to capture a five IV Pokémon by chaining: ",
     median(delta$val) * 15, " minutes.\n")
 
 # test of the 6 iv ditto for fun
 delta2 <- data.frame(val <- rgeom(10 ^ 5, 1 / (31 * 31)))
-cat("Median time to capture a six IV Pokemon by chaining: ",
+cat("Median time to capture a six IV Pokémon by chaining: ",
     median(delta2$val) * 15, " minutes.")
 # chaining to 5 ditto worth it, but not for 6 ditto
 
@@ -867,12 +866,11 @@ cat("Median time to capture a six IV Pokemon by chaining: ",
 # chain catching and wild-caught
 epsilon <- subset(beta, beta$bred != "bred")
 
-ggplot(epsilon, aes(thold, time, color = catch.type, shape = atkst)) +
+ggplot(epsilon, aes(thold, time, color = catch.type)) +
   geom_point(size = 3) + 
   scale_y_log10() +
   labs(color = "Capture Method", x = "IV Sum Threshold", y = "Time",
-       title = "IV Sum Threshold vs. Time by Capture Method", 
-       shape = "Attack Style")
+       title = "IV Sum Threshold vs. Time by Capture Method")
 
 
 # Chunk 8
@@ -883,7 +881,7 @@ beta <- reparam(alpha, TRUE)
 zeta <- subset(beta, catch.type == "ideal breeding" | 
                  catch.type == "ideal chaining")
 ggplot(zeta, aes(thold, time, color = catch.type, shape = atkst)) +
-  geom_point() +
+  geom_point(size = 2) +
   scale_y_log10() +
   labs(color = "Acquisition Method", x = "IV Sum Threshold", y = "Time",
        title = "IV Sum Threshold vs. Time by Acquisition and Attack Style",
