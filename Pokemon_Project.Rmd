@@ -18,18 +18,13 @@ wild_sim <- function(iter) {
   #   iter: The size of the distribution.
   # Returns:
   #   A vector containing the sums of the IVs.
-
   stats <- numeric(length = iter)
   x <- 0
-  
   for (i in 1:iter) {
-    for (j in 1:6){
-      y <- sample(0:31, 6, replace=T)
-      x <- sum(y)
-    }
-    stats[i] <- x
+    y <- sample(0:31, 6, replace = T)
+      
+    stats[i] <- sum(y)
   }
-  
   return(stats)
 }
 
@@ -490,18 +485,13 @@ wild_sim <- function(iter) {
   #   iter: The size of the distribution.
   # Returns:
   #   A vector containing the sums of the IVs.
-
   stats <- numeric(length = iter)
   x <- 0
-  
   for (i in 1:iter) {
-    for (j in 1:6){
-      y <- sample(0:31, 6, replace=T)
-      x <- sum(y)
-    }
-    stats[i] <- x
+    y <- sample(0:31, 6, replace = T)
+      
+    stats[i] <- sum(y)
   }
-  
   return(stats)
 }
 
